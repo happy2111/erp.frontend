@@ -27,8 +27,12 @@ export class AuthStore {
   async login(data: { phone?: string; email?: string; password: string }) {
     const res = await api.post("/auth/login", data);
 
-    const token: string = res.data.data.access_token;
-    const user: any = res.data.data.user;
+    const token: string | undefined = res.data?.data?.access_token;
+    const user: any = res.data?.data?.user;
+
+    if (!token) {
+      throw new Error("Ответ сервера не содержит access_token");
+    }
 
     this.accessToken = token;
     this.user = user;
